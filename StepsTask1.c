@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "utils.h"
-
 
 
 // Define an appropriate struct
@@ -44,6 +42,8 @@ void tokeniseRecord(const char *input, const char *delimiter,
 
 }
 
+FITNESS_DATA fitness_data[12000]
+
 // Complete the main function
 int main() {
     int line_count = 0
@@ -71,7 +71,7 @@ int main() {
     
     tokeniseRecord(line_buffer, ",", date, time, steps);
     
-    printf("Number of records in file are"
+    printf("Number of records in file are: ")
     for (i = number_of_students; i = 0; i++);
     {
         printtokenisRecord(line_count[i]);
