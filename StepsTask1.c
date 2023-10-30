@@ -42,38 +42,51 @@ void tokeniseRecord(const char *input, const char *delimiter,
 
 }
 
-FITNESS_DATA fitness_data[12000]
+FITNESS_DATA fitness_data[12000];
+FILE *open_file(char filename[], char mode[]) {
+    FILE *file = fopen("FitnessData_2023.csv", "r");
+    
+    if (file == NULL) {
+        perror("There is an error in reading the file");
+        exit(1);
+    }
+    return file;
+}
 
 // Complete the main function
 int main() {
-    int line_count = 0
-    char* filename = "FitnessData_2023.csv";
+
+    char filename [] = "FitnessData_2023.csv";
     FILE *file = fopen(filename, "r");
-    if (file == NULL) {
-        printf("error in file\n");
-        return 1;
-    }
-    int buffer_size = 100;
-    char line_buffer[buffer_size];
+
+
+    int buffer_size = 60;
+    char line_buffer[60];
     int line_count = 0;
-    
+   
     while (fgets(line_buffer, buffer_size, file) != NULL) {
-         line_count++;
+        char date[11];
+        char time[6];
+        char steps[20];
+
+        tokeniseRecord(line_buffer, ",", date, time, steps);
+        // Using strcpy to copy source to destination
+        strcpy(fitness_data[line_count].date, date);
+        strcpy(fitness_data[line_count].time, time);
+        fitness_data[line_count].steps = atoi(steps);
+        line_count++;
     }
 
-    char date[11];
-    char time[6];
-    char steps[10];
+    fclose(file);
 
-    tokeniseRecord(line_buffer, ",", date, time, steps);
+    // Printing the copied string
+    printf("Number of records in file: %d\n", line_count);
 
-    int stepsint;
-    
-    tokeniseRecord(line_buffer, ",", date, time, steps);
-    
-    printf("Number of records in file are: ")
-    for (i = number_of_students; i = 0; i++);
-    {
-        printtokenisRecord(line_count[i]);
+    for (int x = 0; x < 3; x++) {
+        printf("%s/", fitness_data[x].date);
+        printf("%s/", fitness_data[x].time);
+        printf("%d\n", fitness_data[x].steps);
     }
+    
+    return 0;
 }
