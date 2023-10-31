@@ -47,7 +47,7 @@ FILE *open_file(char filename[], char mode[]) {
     FILE *file = fopen("FitnessData_2023.csv", "r");
     
     if (file == NULL) {
-        perror("There is an error in reading the file");
+        perror("There is an error in the file");
         exit(1);
     }
     return file;
@@ -60,8 +60,8 @@ int main() {
     FILE *file = fopen(filename, "r");
 
 
-    int buffer_size = 60;
-    char line_buffer[60];
+    int buffer_size = 220;
+    char line_buffer[220];
     int line_count = 0;
    
     while (fgets(line_buffer, buffer_size, file) != NULL) {
@@ -70,7 +70,7 @@ int main() {
         char steps[20];
 
         tokeniseRecord(line_buffer, ",", date, time, steps);
-        // Using strcpy to copy source to destination
+       
         strcpy(fitness_data[line_count].date, date);
         strcpy(fitness_data[line_count].time, time);
         fitness_data[line_count].steps = atoi(steps);
@@ -79,7 +79,7 @@ int main() {
 
     fclose(file);
 
-    // Printing the copied string
+
     printf("Number of records in file: %d\n", line_count);
 
     for (int x = 0; x < 3; x++) {
