@@ -3,12 +3,12 @@
 #include <string.h>
 #include "FitnessDataStruct.h"
 
-// Struct moved to header file
+#define BUFFER_SIZE 1000
+FITNESS_DATA records[12000];
 
+// Struct moved to header file
 // Define any additional variables here
-#define BUFFER_SIZE 100
 // Global variables for filename and FITNESS_DATA array
-FITNESS_DATA fitness_data[12000];
 // This is your helper function. Do not change it in any way.
 // Inputs: character array representing a row; the delimiter character
 // Ouputs: date character array; time character array; steps character array
@@ -45,12 +45,28 @@ FILE *open_file(const char *filename, const char *mode) {
     return file;
 }
 
-void importFile(const char *filename, FITNESS_DATA records[], int *totalRecords);
+void importFile(const char *filename, FITNESS_DATA records[], int *totalRecords) {
+    FILE *file = open_file(filename, "r");
+    char line[100], date[11], time[6], steps[10];
+    const char *delimiter = ",";
+    int recordsRead = 0;
+
+    while (fgets(line, sizeof(line), file) != NULL && recordsRead < 12000) {
+        tokeniseRecord(line, delimiter, date, time, steps);
+        strcpy(records[recordsRead].date, date);
+        strcpy(records[recordsRead].time, time);
+        records[recordsRead].steps = atoi(steps);
+        recordsRead++;
+    }
+
+    *totalRecords = recordsRead;
+    fclose(file);
+}
+
 // Complete the main function
 int main() {
-   char choice;
+    char choice;
     char filename[BUFFER_SIZE];
-    FITNESS_DATA records[BUFFER_SIZE];
     int totalRecords = 0;
 
     do {
@@ -66,11 +82,16 @@ int main() {
 
         switch (choice) {
             case 'A': {
-                char filename[BUFFER_SIZE];
                 printf("Input filename: ");
                 scanf("%s", filename);
+                file = fopen(filename, "r");
+                if (file == NULL) {
+                    printf("Error: could not open file\n");
+                    break;
+                }
                 importFile(filename, records, &totalRecords);
                 printf("Data imported successfully!\n");
+                fclose(file);
                 break;
             }
             case 'B':
