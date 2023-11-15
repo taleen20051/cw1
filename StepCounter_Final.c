@@ -34,7 +34,7 @@ int importFile(const char *filename, FITNESS_DATA records[], int *totalRecords) 
         return 0;
     }
 
-    char line[100], date[11], time[6], steps[10];
+    char line[100], date[30], time[15], steps[10];
     const char *delimiter = ",";
     int recordsRead = 0;
 
