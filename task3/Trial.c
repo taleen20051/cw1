@@ -23,9 +23,7 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
             if (ptr != NULL) {
                 *steps = atoi(ptr);
             } else {
-                // If steps are missing, exit with an error message
-                fprintf(stderr, "Error: Data missing in File\n");
-                exit(1);
+                *steps = 0; // Assigning default value if steps data is missing
             }
         }
     }
@@ -61,29 +59,9 @@ void writeTSVFile(const char *filename, FitnessData records[], int totalRecords)
         exit(1);
     }
 
-    // Sort the records by step count in descending order
-    for (int i = 0; i < totalRecords - 1; i++) {
-        for (int j = i + 1; j < totalRecords; j++) {
-            if (records[i].steps < records[j].steps) {
-                FitnessData temp = records[i];
-                records[i] = records[j];
-                records[j] = temp;
-            }
-        }
-    }
-
-    // Write the sorted data to the output file in tab-separated values
+    // Write the data to the output file in tab-separated values
     for (int i = 0; i < totalRecords; i++) {
-        char output[150];
-        strcpy(output, records[i].date);
-        strcat(output, "\t");
-        strcat(output, records[i].time);
-        strcat(output, "\t");
-        char steps[20];
-        sprintf(steps, "%d\n", records[i].steps);
-        strcat(output, steps);
-
-        fprintf(file, "%s", output);
+        fprintf(file, "%s\t%s\t%d\n", records[i].date, records[i].time, records[i].steps);
     }
 
     fclose(file);
@@ -104,14 +82,7 @@ int main() {
     }
 
     char outputFilename[150];
-    int len = strlen(filename);
-    strcpy(outputFilename, filename);
-    outputFilename[len] = '.';
-    outputFilename[len + 1] = 't';
-    outputFilename[len + 2] = 's';
-    outputFilename[len + 3] = 'v';
-    outputFilename[len + 4] = '\0';
-    
+    snprintf(outputFilename, sizeof(outputFilename), "%s.tsv", filename);
     writeTSVFile(outputFilename, records, totalRecords);
     printf("Output file created successfully: %s\n", outputFilename);
 
