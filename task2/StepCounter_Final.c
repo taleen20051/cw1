@@ -85,13 +85,16 @@ while (1) {
             break;
             }
         case 'B':
+        {
             if (dataImported) {
                 printf("Total records: %d\n", totalRecords);
             } else {
                 printf("Data not imported. Please import data first (Option A).\n");
             }
             break;
+        }
         case 'C':
+        {
             if (dataImported) {
             int minSteps = records[0].steps;
             int index = 0;
@@ -107,7 +110,9 @@ while (1) {
                 printf("Data not imported. Please import data first (Option A).\n");
             }
             break;
+        }
         case 'D': 
+        {
             if (dataImported) {
             int maxSteps = records[0].steps;
             int index = 0;
@@ -123,7 +128,9 @@ while (1) {
                 printf("Data not imported. Please import data first (Option A).\n");
             }
             break;
+        }
         case 'E':
+        {
             if (dataImported) {
                 int totalSteps = 0;
             for (int i = 0; i < totalRecords; ++i) {
@@ -135,7 +142,9 @@ while (1) {
                 printf("Data not imported. Please import data first (Option A).\n");
             }
             break;
+        }
         case 'F':
+        {
             if (dataImported) {
             int start = -1, end = -1;
             int longestPeriod = 0;
@@ -167,10 +176,13 @@ while (1) {
                 printf("Data not imported. Please import data first (Option A).\n");
             }
             break;
+        }
         case 'Q':
+        {
             printf("Program returns 0 & exits.\n");
             exit(0);
             break;
+        }
         default:
             printf("Invalid choice. Please select a valid option.\n");
     }
