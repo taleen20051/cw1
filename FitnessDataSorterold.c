@@ -4,12 +4,14 @@
 
 #define MAX_RECORDS 12000
 
+// Define the struct for the fitness data
 typedef struct {
     char date[11];
     char time[6];
     int steps;
 } FitnessData;
 
+// Function to tokenize a record
 void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *steps) {
     char *ptr = strtok(record, &delimiter);
     if (ptr != NULL) {
@@ -21,8 +23,7 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
             if (ptr != NULL) {
                 *steps = atoi(ptr);
             } else {
-                printf("Error: Steps data missing in the file\n");
-                exit(1);
+                *steps = 0; // Assigning default value if steps data is missing
             }
         }
     }
@@ -31,7 +32,7 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
 int importFile(const char *filename, FitnessData records[], int *totalRecords) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
-        printf("Error opening file\n");
+        perror("Error opening file");
         return 0;
     }
 
@@ -54,22 +55,22 @@ int importFile(const char *filename, FitnessData records[], int *totalRecords) {
 void writeTSVFile(const char *filename, FitnessData records[], int totalRecords) {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
-        printf("Error creating output file\n");
+        perror("Error creating output file");
         exit(1);
     }
 
-    for (int i = 0; i < totalRecords - 1; i++) {
-        for (int j = i + 1; j < totalRecords; j++) {
-            if (records[i].steps < records[j].steps) {
-                FitnessData temp = records[i];
-                records[i] = records[j];
-                records[j] = temp;
-            }
-        }
-    }
-
+    // Write the data to the output file in tab-separated values
     for (int i = 0; i < totalRecords; i++) {
-        fprintf(file, "%s\t%s\t%d\n", records[i].date, records[i].time, records[i].steps);
+        char output[150];
+        strcpy(output, records[i].date);
+        strcat(output, "\t");
+        strcat(output, records[i].time);
+        strcat(output, "\t");
+        char steps[20];
+        sprintf(steps, "%d\n", records[i].steps);
+        strcat(output, steps);
+
+        fprintf(file, "%s", output);
     }
 
     fclose(file);
@@ -90,14 +91,8 @@ int main() {
     }
 
     char outputFilename[150];
-    int len = strlen(filename);
     strcpy(outputFilename, filename);
-    outputFilename[len] = '.';
-    outputFilename[len + 1] = 't';
-    outputFilename[len + 2] = 's';
-    outputFilename[len + 3] = 'v';
-    outputFilename[len + 4] = '\0';
-    
+    strcat(outputFilename, ".tsv");
     writeTSVFile(outputFilename, records, totalRecords);
     printf("Output file created successfully: %s\n", outputFilename);
 
