@@ -32,7 +32,7 @@ int importFile(const char *filename, FitnessData records[], int *totalRecords) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         printf("Error opening file\n");
-        return 0;
+        return 1;
     }
 
     char line[100], date[30], time[15], steps[10];
