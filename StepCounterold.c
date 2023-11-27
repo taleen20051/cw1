@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "FitnessDataStruct.h"
 
 #define MAX_RECORDS 12000
-#define MAX_LINE_LENGTH 100
+FITNESS_DATA records[MAX_RECORDS];
 
-void tokeniseRecord(const char *input, const char *delimiter, char *date, char *time, char *steps) {
+void tokeniseRecord(const char *input, const char *delimiter,
+                    char *date, char *time, char *steps) {
     char *inputCopy = strdup(input);
     
     char *token = strtok(inputCopy, delimiter);
@@ -27,10 +29,6 @@ void tokeniseRecord(const char *input, const char *delimiter, char *date, char *
     free(inputCopy);
 }
 
-void printRecord(FITNESS_DATA record) {
-    printf("Date: %s, Time: %s, Steps: %d\n", record.date, record.time, record.steps);
-}
-
 void displayMenu() {
     printf("\nA: Specify the filename to be imported\n"
            "B: Display the total number of records in the file\n"
@@ -43,55 +41,48 @@ void displayMenu() {
 }
 
 int main() {
-    FITNESS_DATA records[MAX_RECORDS];
+    char line[MAX_RECORDS];
+    char filename[MAX_RECORDS];
     int totalRecords = 0;
-    char filename[100];
     char choice;
-    int dataImported = 0;
+    float mean = 0;
 
     while (1) {
         displayMenu();
         scanf(" %c", &choice);
+        while (getchar() != '\n')
 
-        switch (choice) {
+        switch (choice)
+        {
             case 'A':
-            case 'a': {
+            case 'a':  {
                 printf("Input filename: ");
                 scanf("%s", filename);
-                
-                FILE *file = fopen(filename, "r");
-                if (file == NULL) {
-                    printf("Error: Could not find or open the file.\n");
+                FILE *input = fopen(filename, "r");
+                if (!input)
+                {
+                    printf("Error: The file does not exist or cannot be opened.\n");
                     return 1;
                 }
-
-                char line[MAX_LINE_LENGTH], date[11], time[6], steps[10];
-                const char *delimiter = ",";
-                
                 totalRecords = 0;
-                while (fgets(line, sizeof(line), file) != NULL && totalRecords < MAX_RECORDS) {
-                    tokeniseRecord(line, delimiter, date, time, steps);
-                    strcpy(records[totalRecords].date, date);
-                    strcpy(records[totalRecords].time, time);
-                    records[totalRecords].steps = atoi(steps);
+                while (fgets(line, MAX_RECORDS, input)){
+                    char charSteps[100];
+                    tokenoiseRecord(line, ",", records[totalRecords].date, records[totalRecords].time, charSteps);
+                    records[totalRecords].steps = atoi(charSteps);
                     totalRecords++;
-                }
-                
-                fclose(file);
-                printf("File successfully loaded.\n");
-                dataImported = 1;
-                break;
             }
+            fclose(input);
+            printf("File loaded successfully.\n");
+            break;
             case 'B':
             case 'b': {
-                if (dataImported) {
-                    printf("Total records: %d\n", totalRecords);
+            {
+                printf("Total records: %d\n", totalRecords);
                 } else {
                     printf("Data not imported. Please import data first (Option A).\n");
-                }
+            }
                 break;
             }
-
             case 'C':
             case 'c':  {
                 if (dataImported) {
@@ -209,7 +200,7 @@ int main() {
                 exit(0);
             }
             default:
-                printf("Invalid choice. Try again.\n");
+                printf("Invalid choice. Please select a valid option.\n");
         }
     }
 
