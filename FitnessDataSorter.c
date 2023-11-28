@@ -20,29 +20,39 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
             ptr = strtok(NULL, &delimiter);
             if (ptr != NULL) {
                 *steps = atoi(ptr);
-            } else {
-                printf("Error: Steps data missing in the file\n");
-                exit(1);
             }
         }
     }
+}
+
+int checkMissingData(char *date, char *time, int steps) {
+    if (strlen(date) == 0 || strlen(time) == 0 || steps <= 0) {
+        return 0;
+    }
+    return 1;
 }
 
 int importFile(const char *filename, FitnessData records[], int *totalRecords) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         printf("Error opening file\n");
-        return 1;
+        return 0;
     }
 
-    char line[100], date[30], time[15], steps[10];
+    char line[100], date[11], time[6];
+    int steps;
     const char delimiter = ',';
     int recordsRead = 0;
 
     while (fgets(line, sizeof(line), file) != NULL && recordsRead < MAX_RECORDS) {
-        tokeniseRecord(line, delimiter, date, time, &records[recordsRead].steps);
+        tokeniseRecord(line, delimiter, date, time, &steps);
+        if (!checkMissingData(date, time, steps)) {
+            fclose(file);
+            return 0;
+        }
         strcpy(records[recordsRead].date, date);
         strcpy(records[recordsRead].time, time);
+        records[recordsRead].steps = steps;
         recordsRead++;
     }
 
@@ -85,7 +95,7 @@ int main() {
     int totalRecords = 0;
 
     if (!importFile(filename, records, &totalRecords)) {
-        printf("Error: invalid file\n");
+        printf("Error: Missing or invalid data in the file\n");
         return 1;
     }
 

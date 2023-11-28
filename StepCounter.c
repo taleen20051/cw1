@@ -105,8 +105,8 @@ int main() {
                                 index = i;
                             }
                         }
-                        printf("Fewest steps: ");
-                        printRecord(records[index]);
+                        printf("Fewest steps: %s %s\n", records[index].date, records[index].time);
+                    
                     } else {
                         printf("No records available.\n");
                     }
@@ -128,8 +128,8 @@ int main() {
                                 index = i;
                             }
                         }
-                        printf("Largest steps: ");
-                        printRecord(records[index]);
+                        printf("Largest steps: %s %s\n", records[index].date, records[index].time);
+
                     } else {
                         printf("No records available.\n");
                     }
@@ -188,10 +188,10 @@ int main() {
                         }
 
                         if (start != -1 && end != -1) {
-                            printf("Longest period start: ");
-                            printRecord(records[start]);
-                            printf("Longest period end: ");
-                            printRecord(records[end]);
+                            printf("Longest period start: %s %s\n", records[start].date, records[start].time);
+
+                            printf("Longest period end: %s %s\n", records[end].date, records[end].time);
+
                         } else {
                             printf("No continuous period where the step count is above 500 steps.\n");
                         }
