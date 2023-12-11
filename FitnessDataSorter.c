@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_RECORDS 12000
+#define ALL_RECORDS 12000
 
 typedef struct {
     char date[11];
@@ -42,21 +42,21 @@ int importFile(const char *filename, FitnessData records[], int *totalRecords) {
     char line[100], date[11], time[6];
     int steps;
     const char delimiter = ',';
-    int recordsRead = 0;
+    int recordsScan = 0;
 
-    while (fgets(line, sizeof(line), file) != NULL && recordsRead < MAX_RECORDS) {
+    while (fgets(line, sizeof(line), file) != NULL && recordsScan < ALL_RECORDS) {
         tokeniseRecord(line, delimiter, date, time, &steps);
         if (!checkMissingData(date, time, steps)) {
             fclose(file);
             return 0;
         }
-        strcpy(records[recordsRead].date, date);
-        strcpy(records[recordsRead].time, time);
-        records[recordsRead].steps = steps;
-        recordsRead++;
+        strcpy(records[recordsScan].date, date);
+        strcpy(records[recordsScan].time, time);
+        records[recordsScan].steps = steps;
+        recordsScan++;
     }
 
-    *totalRecords = recordsRead;
+    *totalRecords = recordsScan;
     fclose(file);
     return 1;
 }
@@ -91,7 +91,7 @@ int main() {
     printf("Enter filename: ");
     scanf("%s", filename);
 
-    FitnessData records[MAX_RECORDS];
+    FitnessData records[ALL_RECORDS];
     int totalRecords = 0;
 
     if (!importFile(filename, records, &totalRecords)) {
